@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "test": "production WebAudio ring scheduler with original PCM and recovered refill guard",
+  "tracks": [
+    {
+      "track": "th20_01.wav",
+      "seconds_checked": 106.2,
+      "frames_checked": 4683420,
+      "ring_seconds": 4,
+      "refills": 424,
+      "underruns": 0,
+      "loop_start_frame": 89528,
+      "loop_end_frame_exclusive": 4323120,
+      "pcm_sha256": "121eb5b33813cfb248546cf43a29ef2f29c42cae6b906b2c3e4f2df2c72a1247",
+      "all_scheduled_samples_equal_original_pcm": true
+    },
+    {
+      "track": "th20_02.wav",
+      "seconds_checked": 138.55,
+      "frames_checked": 6110055,
+      "ring_seconds": 4,
+      "refills": 553,
+      "underruns": 0,
+      "loop_start_frame": 617760,
+      "loop_end_frame_exclusive": 5750368,
+      "pcm_sha256": "68d16df9fab00e38cb539cb655720b37269dc3dd3baf856c5e31fb162720f30d",
+      "all_scheduled_samples_equal_original_pcm": true
+    }
+  ],
+  "pause_resume_seek_autoplay_and_nonlooping_effects": "passed",
+  "limitation": "Mock AudioContext verifies scheduled PCM and timing; speaker/browser underrun checks require runtime validation."
+}

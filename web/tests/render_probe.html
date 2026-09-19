@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TH20 WebGL renderer pixel regression</title>
+  <style>
+    body { background: #161c25; color: #e6edf3; font: 15px system-ui, sans-serif; margin: 24px; }
+    canvas { width: 128px; height: 128px; border: 1px solid #687384; image-rendering: pixelated; }
+    pre { white-space: pre-wrap; }
+    html[data-result="pass"] #status { color: #7fda95; }
+    html[data-result="fail"] #status { color: #ff8b8b; }
+  </style>
+</head>
+<body>
+  <h1>TH20 WebGL renderer pixel regression</h1>
+  <p id="status">Loading the actual game rendering backend…</p>
+  <canvas id="game-canvas" width="128" height="128"></canvas>
+  <pre id="results">[]</pre>
+  <script>
+    var Module = {
+      canvas: document.getElementById('game-canvas'),
+      onAbort(reason) {
+        document.documentElement.dataset.result = 'fail';
+        document.getElementById('status').textContent = `Aborted: ${reason}`;
+      }
+    };
+    addEventListener('error', event => {
+      document.documentElement.dataset.result = 'fail';
+      document.getElementById('status').textContent = event.message;
+    });
+  </script>
+  <script src="render_probe.js"></script>
+</body>
+</html>

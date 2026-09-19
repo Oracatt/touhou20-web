@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>东方锦上京 WebAssembly</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <main>
+    <canvas id="game-canvas" width="640" height="480" tabindex="0"></canvas>
+    <section id="loading" aria-live="polite">
+      <strong id="status">准备 WebAssembly 运行时…</strong>
+      <progress id="progress" max="1" value="0"></progress>
+      <span id="detail">首次载入需要读取游戏数据；存档和配置保存在浏览器本地。</span>
+    </section>
+  </main>
+  <script src="th20_game.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

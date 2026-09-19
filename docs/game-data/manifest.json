@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "name": "th20.dat",
+      "size": 150943726,
+      "sha256": "9db8d7c43fbacec95614163d4c3e1d254e82169f8550177ee849831130590494",
+      "chunks": [
+        {
+          "path": "th20.dat.part0000",
+          "size": 33554432,
+          "sha256": "99919dc5eb838092d2d62e95e1c5d889e44197da721b265ec0293e9ff229073f"
+        },
+        {
+          "path": "th20.dat.part0001",
+          "size": 33554432,
+          "sha256": "1ea38bf476189302ae3947d87364f0d682ec42cede5b444e9f1d92d88bd1103a"
+        },
+        {
+          "path": "th20.dat.part0002",
+          "size": 33554432,
+          "sha256": "933780ae782198362e84effb33829111779c459d58f8af6b7bfe64f5316e1a19"
+        },
+        {
+          "path": "th20.dat.part0003",
+          "size": 33554432,
+          "sha256": "9035292cb61a6685658057ac0fa14f78a5c4ef6b7c709067bb06d8271581af35"
+        },
+        {
+          "path": "th20.dat.part0004",
+          "size": 16725998,
+          "sha256": "8c37a69bfb13c86eeb97ec413cd3f34a43a82cf5470d22497a994ef41ce84ca9"
+        }
+      ]
+    },
+    {
+      "name": "thbgm.dat",
+      "size": 429790784,
+      "sha256": "a067fe223e7c51c50c9fd5356c0521742762ce951f53ff99f8abbcc9b8e9cff0",
+      "chunks": [
+        {
+          "path": "thbgm.dat.part0000",
+          "size": 33554432,
+          "sha256": "64d69383e3089c760881f2090b1a3cd27938264b795a6880a1cda5bffc11d3e1"
+        },
+        {
+          "path": "thbgm.dat.part0001",
+          "size": 33554432,
+          "sha256": "9a1918c156be5f55279bb9e67607b05b3af2f7e5d2f5454d16b4c86afb2c0316"
+        },
+        {
+          "path": "thbgm.dat.part0002",
+          "size": 33554432,
+          "sha256": "57a2e6902bd0e6af34581bb9444bb9554a606724ce61262c9de300187136c924"
+        },
+        {
+          "path": "thbgm.dat.part0003",
+          "size": 33554432,
+          "sha256": "d82fa103321d492ac3e203fb478f91301f3dcb534be25b7f8f6da871249e4a06"
+        },
+        {
+          "path": "thbgm.dat.part0004",
+          "size": 33554432,
+          "sha256": "06691312bff56807eac4760244389a7845346a280012780752fcf25119ad8a44"
+        },
+        {
+          "path": "thbgm.dat.part0005",
+          "size": 33554432,
+          "sha256": "86112d7de9339a24c1064164601cb852bfb084f445477a38b0159831b14344c2"
+        },
+        {
+          "path": "thbgm.dat.part0006",
+          "size": 33554432,
+          "sha256": "852b6d3d24413851b9eff38be0dba6d38362baedaed4899aa122f208187432cd"
+        },
+        {
+          "path": "thbgm.dat.part0007",
+          "size": 33554432,
+          "sha256": "cf07dc74f746ceec79815a61531cfe3176409dbaa8d9b6724c6f0fa0e16d1228"
+        },
+        {
+          "path": "thbgm.dat.part0008",
+          "size": 33554432,
+          "sha256": "f4a9db53aff6a03f9b8ab0189997c357c3316f6fb98fd5e7575b2f2215f986e6"
+        },
+        {
+          "path": "thbgm.dat.part0009",
+          "size": 33554432,
+          "sha256": "9bbab2f756abd769e3dfd379617bbd476ff4964342e008d6c07f8b3e0296d67c"
+        },
+        {
+          "path": "thbgm.dat.part0010",
+          "size": 33554432,
+          "sha256": "513fa9f61b98809bd1d0341eed48909b87175fe08f6cec3e8e25f7e56513c20f"
+        },
+        {
+          "path": "thbgm.dat.part0011",
+          "size": 33554432,
+          "sha256": "b97fe9b0124a5acc720f42b60b35a0fb09d23627752f2050f6ef1bc884aba8f7"
+        },
+        {
+          "path": "thbgm.dat.part0012",
+          "size": 27137600,
+          "sha256": "2fa01b92bdb17dcb8c054d4c5b4ca485e5def0919338b62afc885c9c4cfb308d"
+        }
+      ]
+    }
+  ]
+}

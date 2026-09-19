@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>东方锦上京 WASM 持续输入测试</title>
+  <link rel="stylesheet" href="game.css">
+  <style>
+    canvas { width: min(96vw, calc((100dvh - 220px)*4/3), 960px); }
+    #input-panel { width: min(96vw, 960px); display: grid; gap: 8px; text-align: center; }
+    #input-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+    #input-panel button { border: 1px solid #766991; border-radius: 5px; background: #282237; color: #eee; padding: 9px 13px; font: inherit; cursor: pointer; }
+    #input-panel button[aria-pressed="true"] { background: #604c9c; border-color: #cbb4ff; }
+    #input-panel button:disabled { opacity: .45; cursor: wait; }
+    #held-state { margin: 0; font-size: 14px; color: #d3c9ec; }
+    #input-panel small { color: #aca3bd; }
+  </style>
+</head>
+<body>
+  <main>
+    <canvas id="game-canvas" width="640" height="480" tabindex="0"></canvas>
+    <section id="input-panel" aria-label="持续输入测试面板">
+      <div id="input-buttons">
+        <button type="button" data-key="90" aria-pressed="false" disabled>持续射击 Z</button>
+        <button type="button" data-key="37" aria-pressed="false" disabled>持续左移</button>
+        <button type="button" data-key="39" aria-pressed="false" disabled>持续右移</button>
+        <button type="button" data-key="16" aria-pressed="false" disabled>低速 Shift</button>
+        <button type="button" id="release-all" disabled>释放全部</button>
+      </div>
+      <p id="held-state" role="status">等待游戏启动…</p>
+      <small>仅保持键盘输入；再次点击解除。菜单仍可用键盘操作，离开窗口会释放全部。</small>
+    </section>
+    <section id="loading" aria-live="polite">
+      <strong id="status">准备 WebAssembly 运行时…</strong>
+      <progress id="progress" max="1" value="0"></progress>
+      <span id="detail">首次载入需要读取游戏数据；存档和配置保存在浏览器本地。</span>
+    </section>
+  </main>
+  <script src="th20_game.js"></script>
+  <script src="game.js"></script>
+  <script>
+    (() => {
+      const panel = document.getElementById('input-panel');
+      const canvas = document.getElementById('game-canvas');
+      const state = document.getElementById('held-state');
+      const buttons = [...panel.querySelectorAll('button[data-key]')];
+      const allButtons = [...panel.querySelectorAll('button')];
+      const held = new Set();
+      const labels = new Map([[90, '射击 Z'], [37, '左移'], [39, '右移'], [16, '低速 Shift']]);
+      const physicalCodes = {KeyZ: 90, ArrowLeft: 37, ArrowRight: 39, ShiftLeft: 16, ShiftRight: 16};
+      function key(code, down) {
+        window.th20Runtime?.ccall('th20_web_key_event', null, ['number', 'number'], [code, down ? 1 : 0]);
+      }
+      function display() {
+        for (const button of buttons) button.setAttribute('aria-pressed', String(held.has(Number(button.dataset.key))));
+        state.textContent = held.size ? `按住：${[...held].map(code => labels.get(code)).join('、')}` : '按住：无';
+        document.documentElement.dataset.heldKeys = [...held].join(',');
+      }
+      function releaseAll() {
+        for (const code of held) key(code, false);
+        held.clear(); display();
+      }
+      for (const button of buttons) button.addEventListener('click', event => {
+        event.preventDefault();
+        if (!window.th20Runtime) return;
+        const code = Number(button.dataset.key);
+        if (held.has(code)) { held.delete(code); key(code, false); }
+        else { held.add(code); key(code, true); }
+        display(); canvas.focus({preventScroll: true});
+      });
+      document.getElementById('release-all').addEventListener('click', event => {
+        event.preventDefault(); releaseAll(); canvas.focus({preventScroll: true});
+      });
+      // Pointer activation keeps keyboard focus on the game canvas. If a button
+      // is reached with Tab, its Enter/Space activation must not reach game.js.
+      panel.addEventListener('pointerdown', event => { if (event.target.closest('button')) event.preventDefault(); });
+      panel.addEventListener('keydown', event => {
+        event.stopPropagation();
+        if (event.code === 'Enter' || event.code === 'Space') {
+          event.preventDefault();
+          if (!event.repeat) event.target.closest('button')?.click();
+        }
+      });
+      panel.addEventListener('keyup', event => event.stopPropagation());
+      // Releasing a physical key does not cancel an explicitly latched input.
+      addEventListener('keyup', event => {
+        if (held.has(physicalCodes[event.code])) { event.preventDefault(); event.stopImmediatePropagation(); }
+      }, true);
+      addEventListener('blur', releaseAll);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
+      function waitForRuntime() {
+        if (!window.th20Runtime) { requestAnimationFrame(waitForRuntime); return; }
+        for (const button of allButtons) button.disabled = false;
+        display();
+      }
+      requestAnimationFrame(waitForRuntime);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>东方锦上京 WebAssembly 移植</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">TH20 SOURCE PORT</p>
+      <h1>东方锦上京 · WebAssembly</h1>
+      <p id="runtime-status" class="status">正在载入 WASM 运行时……</p>
+    </header>
+
+    <section class="panel">
+      <h2>载入游戏资源</h2>
+      <p>选择正版游戏目录里的 <code>th20.dat</code>。文件只在当前浏览器标签页中处理，不会上传。</p>
+      <label class="picker">
+        <input id="archive-file" type="file" accept=".dat,application/octet-stream" disabled>
+        <span>选择 th20.dat</span>
+      </label>
+      <progress id="load-progress" value="0" max="1" hidden></progress>
+      <p id="archive-status" class="muted">等待资源文件。</p>
+    </section>
+
+    <section class="panel">
+      <div class="row">
+        <h2>资源目录</h2>
+        <input id="filter" type="search" placeholder="筛选文件名" disabled>
+      </div>
+      <div id="archive-summary" class="metrics"></div>
+      <ol id="entry-list" class="entries"></ol>
+    </section>
+
+    <section class="panel port-state">
+      <h2>移植状态</h2>
+      <p>当前页面运行的是从恢复源码重新编译的 WASM 资源层，已经能解密、解压并校验真实 THA1 数据。游戏画面、声音、输入和主循环仍在接入浏览器平台层；此构建尚不是可玩的完整游戏。</p>
+    </section>
+  </main>
+  <script src="th20_web.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
