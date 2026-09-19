@@ -24,6 +24,17 @@
 
 首次载入约 554 MiB 原版资源，页面会显示进度。建议使用支持 WebGL 2 的桌面 Edge 或 Chrome。点击画面后使用方向键移动、Z 确认/射击、X 取消/符卡、Shift 低速、Esc 暂停；Alt+Enter 切换全屏。浏览器存档和配置位于该站点的本地存储中。
 
+## Cloudflare Pages 发布
+
+免费 Pages 的单文件上传限制为 25 MiB。发布前将资源改为 24 MiB 分块，再通过 Wrangler 直接上传：
+
+```powershell
+python tools\prepare_github_site.py --output-dir cloudflare_pages --chunk-mib 24
+npx --yes wrangler@4 pages deploy cloudflare_pages --project-name touhou20-web
+```
+
+当前生产入口是 <https://touhou20-web.pages.dev/>。首次访问仍须下载约 554 MiB 的原版资源，之后浏览器会从本地缓存读取。
+
 主要产物：
 
 - `build_web\game.html`、`th20_game.js`、`th20_game.wasm`：游戏运行页和编译产物。

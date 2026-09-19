@@ -26,8 +26,9 @@ Thumbs.db
 /userdata/
 /th20-data/
 /game-data/
+/cloudflare_pages/
+/.wrangler/
 th20.dat
 thbgm.dat
 scoreth20.dat
 th20.cfg
-
