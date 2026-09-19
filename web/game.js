@@ -34,7 +34,18 @@
         try{
           const response=await fetch(url,{cache:attempt?'reload':'default'});
           if(!response.ok)throw new Error(`HTTP ${response.status}`);
-          bytes=new Uint8Array(await response.arrayBuffer());
+          if(response.body){
+            bytes=new Uint8Array(chunk.size);let received=0;
+            const reader=response.body.getReader();
+            for(;;){
+              const {done,value}=await reader.read();if(done)break;
+              if(received+value.length>chunk.size){await reader.cancel();throw new Error('下载大小不匹配');}
+              bytes.set(value,received);received+=value.length;
+              progress.value=(index-1+(offset+received)/entry.size)/total;
+              detail.textContent=`${((offset+received)/1048576).toFixed(1)} / ${(entry.size/1048576).toFixed(1)} MiB`;
+            }
+            if(received!==chunk.size)throw new Error('下载大小不匹配');
+          }else bytes=new Uint8Array(await response.arrayBuffer());
           if(bytes.length!==chunk.size)throw new Error('下载大小不匹配');
           const digest=await crypto.subtle.digest('SHA-256',bytes);
           const hash=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');

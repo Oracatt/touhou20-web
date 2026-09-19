@@ -87,6 +87,22 @@ function binaryResponse(bytes, { status = 200, streaming = false, contentLength 
   };
 }
 
+function streamResponse(pieces, { onRead = () => {}, onCancel = () => {} } = {}) {
+  let next = 0;
+  return {
+    ok: true, status: 200,
+    arrayBuffer: async () => { throw new Error('stream response must use its reader'); },
+    body: { getReader: () => ({
+      async read() {
+        onRead(next);
+        if (next === pieces.length) return { done: true };
+        return { done: false, value: Uint8Array.from(pieces[next++]) };
+      },
+      async cancel() { onCancel(); }
+    }) }
+  };
+}
+
 const cases = [];
 const check = (name, run) => cases.push({ name, run });
 
@@ -95,6 +111,48 @@ check('production fetchData joins verified chunks without changing bytes', async
   assert.deepEqual(Array.from(await test.fetchData('th20.dat', 2, 2)), expectedBytes);
   assert.equal(test.progress.value, 1);
   assert.equal(test.requests.length, 3);
+});
+
+check('streamed chunks report intermediate progress and reassemble verified bytes', async () => {
+  const observed = [];
+  const test = harness({ chunkResponse: index => streamResponse([
+    parts[index].subarray(0, 1), parts[index].subarray(1)
+  ], { onRead: () => observed.push(test.progress.value) }) });
+  assert.deepEqual(Array.from(await test.fetchData('th20.dat', 1, 1)), expectedBytes);
+  // The reader sees progress from the preceding network piece before completion.
+  assert.deepEqual(observed, [0, 1 / 7, 3 / 7, 3 / 7, 4 / 7, 1]);
+  assert.equal(test.progress.value, 1);
+  assert.equal(test.requests.length, 3);
+});
+
+check('streamed chunks still reject bad checksums after three attempts', async () => {
+  const test = harness({ chunkResponse: () => streamResponse([[1], [2, 3]]) });
+  await assert.rejects(test.fetchData('th20.dat', 1, 1), /资源校验失败/);
+  assert.deepEqual(test.requests.slice(1).map(request => request.cache), ['default', 'reload', 'reload']);
+  assert.equal(test.requests.length, 4);
+});
+
+check('streamed short reads reject after three attempts without downloading the next chunk', async () => {
+  let reads = 0;
+  const test = harness({ chunkResponse: () => streamResponse([[0], [255]], { onRead: () => ++reads }) });
+  await assert.rejects(test.fetchData('th20.dat', 1, 1), /下载大小不匹配/);
+  assert.equal(reads, 9);
+  assert.equal(test.requests.length, 4);
+  assert.ok(test.requests.slice(1).every(request => request.url.endsWith('/th20.0.bin')));
+  assert.equal(test.progress.value, 2 / 7);
+});
+
+check('streamed oversized pieces cancel each reader before rejecting', async () => {
+  let reads = 0;
+  let cancelled = 0;
+  const test = harness({ chunkResponse: () => streamResponse([[0], [255, 17, 42], [99]], {
+    onRead: () => ++reads, onCancel: () => ++cancelled
+  }) });
+  await assert.rejects(test.fetchData('th20.dat', 1, 1), /下载大小不匹配/);
+  assert.equal(cancelled, 3);
+  assert.equal(reads, 6, 'must stop before reading the remainder of an oversized response');
+  assert.equal(test.requests.length, 4);
+  assert.equal(test.progress.value, 1 / 7);
 });
 
 check('chunk paths stay relative to the manifest on nested GitHub Pages routes', async () => {

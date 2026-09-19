@@ -20,7 +20,7 @@ These checks cover specific browser-port regressions. They do not establish comp
 
 Run `node web/tests/chunk_loader.cjs` from the repository root. This executes the actual production `web/game.js` in a Node VM with browser and fetch mocks, using Node Web Crypto for SHA-256. It adds only an export hook; the loader functions are not duplicated in the test.
 
-The 19 checks cover exact chunk reassembly, nested Pages paths, cached manifests, checksum and size rejection, three-attempt retries, invalid paths, missing files, declared-length mismatches, and manifest failures. They also exercise the production no-manifest branch with both streaming and `arrayBuffer` downloads, including missing content length and HTTP errors. This test needs Node with `node:crypto.webcrypto`, no game assets, and no running web server.
+The 23 checks cover exact chunk reassembly, intermediate streaming progress, streamed checksum and size rejection, reader cancellation on oversized streams, nested Pages paths, cached manifests, three-attempt retries, invalid paths, missing files, declared-length mismatches, and manifest failures. They also exercise the production no-manifest branch with both streaming and `arrayBuffer` downloads, including missing content length and HTTP errors. This test needs Node with `node:crypto.webcrypto`, no game assets, and no running web server.
 
 ## Sustained gameplay input
 
